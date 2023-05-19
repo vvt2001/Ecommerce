@@ -31,6 +31,8 @@ namespace EcommerceAPI
         {
             services.AddControllers();
             services.AddTransient<IProductServices, ProductServices>();
+            services.AddTransient<IAccountServices, AccountServices>();
+
             services.AddDbContext<DatabaseContext>(option => option.UseSqlServer("Server=VVT\\SQLEXPRESS;Database=Ecommerce;Trusted_Connection=True;"));
             
         }

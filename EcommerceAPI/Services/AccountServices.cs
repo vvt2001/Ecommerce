@@ -1,0 +1,54 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using EcommerceData;
+using EcommerceData.Model;
+using Microsoft.EntityFrameworkCore;
+
+namespace EcommerceAPI.Services
+{
+    public interface IAccountServices
+    {
+        Account Create(Account Account);
+        void Delete(int id);
+        Account Get(int id);
+        Account Edit(int id, string password);
+    }
+    public class AccountServices : IAccountServices
+    {
+        private readonly DatabaseContext _context;
+        public AccountServices(DatabaseContext context)
+        {
+            _context = context;
+        }
+        public Account Create(Account Account)
+        {
+            _context.Add(Account);
+            _context.SaveChanges();
+            return Account;
+        }
+
+        public void Delete(int id)
+        {
+            var Account = _context.Accounts.Where(x => x.ID == id).FirstOrDefault();
+            _context.Accounts.Remove(Account);
+            _context.SaveChanges();
+        }
+
+        public Account Edit(int id, string password)
+        {
+            var account = _context.Accounts.Find(id);
+            account.Password = password;
+            _context.Entry(account).State = EntityState.Modified;
+            _context.SaveChanges();
+            return account;
+        }
+
+        public Account Get(int id)
+        {
+            var Account = _context.Accounts.Where(Account => Account.ID == id).FirstOrDefault();
+            return Account;
+        }
+    }
+}

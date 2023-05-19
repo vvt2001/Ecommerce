@@ -1,6 +1,7 @@
 ﻿using EcommerceData;
 using EcommerceData.Model;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,7 @@ namespace EcommerceAPI.Services
         Product Get(int id);
         Product Edit(Product product);
         List<Product> Search(ProductSearching productSearching);
+        CartItem AddToCart(int UserID, int ProductID, int quantity);
     }
     public class ProductServices : IProductServices
     {
@@ -61,6 +63,28 @@ namespace EcommerceAPI.Services
                                             .Take(productSearching.PageSize)
                                             .ToList();
             return searchResult;
+        }
+        public CartItem AddToCart(int UserID, int ProductID, int quantity)
+        {
+            var user = _context.Accounts.Find(UserID);
+            var product = _context.Products.Find(ProductID);
+            var cart = new List<CartItem>();
+
+            var cartItem = new CartItem()
+            {
+                Product = product,
+                Quantity = quantity
+            };
+
+            if(user.CartInfo != null && user.CartInfo != "")
+                cart = JsonConvert.DeserializeObject<List<CartItem>>(user.CartInfo);
+            cart.Add(cartItem);
+            var jsoncart = JsonConvert.SerializeObject(cart);
+            user.CartInfo = jsoncart;
+            _context.Entry(user).State = EntityState.Modified;
+            _context.SaveChanges();
+
+            return cartItem;
         }
     }
 }

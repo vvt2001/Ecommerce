@@ -48,6 +48,12 @@ namespace EcommerceAPI.Controllers
             var searchResult = _productServices.Search(productSearching);
             return Ok(searchResult);
         }
+        [HttpPost("addtocart")]
+        public ActionResult AddToCart(int UserID, int ProductID, int quantity)
+        {
+            var cartItem = _productServices.AddToCart(UserID, ProductID, quantity);
+            return Ok(cartItem);
+        }
        
     }
 }

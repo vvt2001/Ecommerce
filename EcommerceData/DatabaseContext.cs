@@ -19,7 +19,7 @@ namespace EcommerceData
             base.OnConfiguring(optionsBuilder);
         }
         public DbSet<Product> Products { get; set; }
-
+        public DbSet<Account> Accounts { get; set; }
 
     }
 }
