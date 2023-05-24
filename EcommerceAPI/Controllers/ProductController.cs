@@ -49,11 +49,17 @@ namespace EcommerceAPI.Controllers
             return Ok(searchResult);
         }
         [HttpPost("addtocart")]
-        public ActionResult AddToCart(int UserID, int ProductID, int quantity)
+        public ActionResult AddToCart(int UserID, int ProductID, int ProductQuantity)
         {
-            var cartItem = _productServices.AddToCart(UserID, ProductID, quantity);
+            var cartItem = _productServices.AddToCart(UserID, ProductID, ProductQuantity);
             return Ok(cartItem);
         }
-       
+        [HttpPost("removefromcart")]
+        public ActionResult RemoveFromCart(int UserID, int ProductID)
+        {
+            var cartItem = _productServices.RemoveFromCart(UserID, ProductID);
+            return Ok(cartItem);
+        }
+
     }
 }

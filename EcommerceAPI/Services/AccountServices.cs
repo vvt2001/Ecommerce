@@ -31,7 +31,7 @@ namespace EcommerceAPI.Services
 
         public void Delete(int id)
         {
-            var Account = _context.Accounts.Where(x => x.ID == id).FirstOrDefault();
+            var Account = _context.Accounts.Where(x => x.ID == id).Include(x=>x.Carts).FirstOrDefault();
             _context.Accounts.Remove(Account);
             _context.SaveChanges();
         }

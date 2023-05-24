@@ -11,7 +11,7 @@ namespace EcommerceData
         public DatabaseContext CreateDbContext(string[] args)
         {
 
-            var connectionString = "Server=VVT\\SQLEXPRESS;Database=Ecommerce;Trusted_Connection=True;";
+            var connectionString = "Server=VVT\\SQLEXPRESS;Database=Ecommerce;Trusted_Connection=True";
 
             var optionsBuilder = new DbContextOptionsBuilder<DatabaseContext>();
             optionsBuilder.UseSqlServer(connectionString);

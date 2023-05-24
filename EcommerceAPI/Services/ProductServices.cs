@@ -16,7 +16,8 @@ namespace EcommerceAPI.Services
         Product Get(int id);
         Product Edit(Product product);
         List<Product> Search(ProductSearching productSearching);
-        CartItem AddToCart(int UserID, int ProductID, int quantity);
+        Cart AddToCart(int UserID, int ProductID, int ProductQuantity);
+        Cart RemoveFromCart(int UserID, int ProductID);
     }
     public class ProductServices : IProductServices
     {
@@ -34,7 +35,7 @@ namespace EcommerceAPI.Services
 
         public void Delete(int id)
         {
-            var product = _context.Products.Where(x => x.ID == id).FirstOrDefault();
+            var product = _context.Products.Where(x => x.ID == id).Include(x=>x.Carts).FirstOrDefault();
             _context.Products.Remove(product);
             _context.SaveChanges();
         }
@@ -64,27 +65,41 @@ namespace EcommerceAPI.Services
                                             .ToList();
             return searchResult;
         }
-        public CartItem AddToCart(int UserID, int ProductID, int quantity)
+        public Cart AddToCart(int UserID, int ProductID, int ProductQuantity)
         {
             var user = _context.Accounts.Find(UserID);
             var product = _context.Products.Find(ProductID);
-            var cart = new List<CartItem>();
-
-            var cartItem = new CartItem()
+            var cart = new Cart();
+            if (_context.Carts.Where(x => x.AccountID == UserID && x.ProductID == ProductID).FirstOrDefault() == null) 
             {
-                Product = product,
-                Quantity = quantity
-            };
+                cart = new Cart()
+                {
+                    AccountID = UserID,
+                    ProductID = ProductID,
+                    ProductQuantity = ProductQuantity,
+                   
+                };
+                _context.Carts.Add(cart);
+            }
+            else
+            {
+                cart = _context.Carts.Where(x => x.AccountID == UserID && x.ProductID == ProductID).FirstOrDefault();
+                cart.ProductQuantity += ProductQuantity;
+                _context.Entry(cart).State = EntityState.Modified;
+            }
 
-            if(user.CartInfo != null && user.CartInfo != "")
-                cart = JsonConvert.DeserializeObject<List<CartItem>>(user.CartInfo);
-            cart.Add(cartItem);
-            var jsoncart = JsonConvert.SerializeObject(cart);
-            user.CartInfo = jsoncart;
-            _context.Entry(user).State = EntityState.Modified;
             _context.SaveChanges();
 
-            return cartItem;
+            return cart;
+        }
+        public Cart RemoveFromCart(int UserID, int ProductID)
+        {
+            var user = _context.Accounts.Find(UserID);
+            var product = _context.Products.Find(ProductID);
+            var cart = _context.Carts.Where(x => x.AccountID == UserID && x.ProductID == ProductID).FirstOrDefault();
+            _context.Carts.Remove(cart);
+
+            return cart;
         }
     }
 }

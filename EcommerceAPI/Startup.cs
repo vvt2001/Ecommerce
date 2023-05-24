@@ -34,7 +34,7 @@ namespace EcommerceAPI
             services.AddTransient<IAccountServices, AccountServices>();
 
             services.AddDbContext<DatabaseContext>(option => option.UseSqlServer("Server=VVT\\SQLEXPRESS;Database=Ecommerce;Trusted_Connection=True;"));
-            
+            services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -13,13 +13,18 @@ namespace EcommerceData
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            // quan he 1 nhieu
+            builder.Entity<Cart>().HasOne(cart => cart.Account).WithMany(account => account.Carts).HasForeignKey(cart => cart.AccountID);
+            builder.Entity<Cart>().HasOne(cart => cart.Product).WithMany(product => product.Carts).HasForeignKey(cart => cart.ProductID);
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
+            
         }
         public DbSet<Product> Products { get; set; }
         public DbSet<Account> Accounts { get; set; }
+        public DbSet<Cart> Carts { get; set; }
 
     }
 }
