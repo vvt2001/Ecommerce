@@ -18,6 +18,7 @@ namespace EcommerceAPI.Services
         List<Product> Search(ProductSearching productSearching);
         Cart AddToCart(int UserID, int ProductID, int ProductQuantity);
         Cart RemoveFromCart(int UserID, int ProductID);
+        Receipt MakeReceipt(int UserID);
     }
     public class ProductServices : IProductServices
     {
@@ -70,27 +71,35 @@ namespace EcommerceAPI.Services
             var user = _context.Accounts.Find(UserID);
             var product = _context.Products.Find(ProductID);
             var cart = new Cart();
-            if (_context.Carts.Where(x => x.AccountID == UserID && x.ProductID == ProductID).FirstOrDefault() == null) 
+            if(user != null && product != null)
             {
-                cart = new Cart()
+                if (_context.Carts.Where(x => x.AccountID == UserID && x.ProductID == ProductID).FirstOrDefault() == null)
                 {
-                    AccountID = UserID,
-                    ProductID = ProductID,
-                    ProductQuantity = ProductQuantity,
-                   
-                };
-                _context.Carts.Add(cart);
+                    cart = new Cart()
+                    {
+                        AccountID = UserID,
+                        ProductID = ProductID,
+                        ProductQuantity = ProductQuantity,
+                        TotalPrice = product.Price * ProductQuantity,
+                    };
+                    _context.Carts.Add(cart);
+                }
+                else
+                {
+                    cart = _context.Carts.Where(x => x.AccountID == UserID && x.ProductID == ProductID).FirstOrDefault();
+                    cart.ProductQuantity += ProductQuantity;
+                    cart.TotalPrice = product.Price * cart.ProductQuantity;
+                    _context.Entry(cart).State = EntityState.Modified;
+                }
+
+                _context.SaveChanges();
+                return cart;
             }
             else
             {
-                cart = _context.Carts.Where(x => x.AccountID == UserID && x.ProductID == ProductID).FirstOrDefault();
-                cart.ProductQuantity += ProductQuantity;
-                _context.Entry(cart).State = EntityState.Modified;
+                throw new ArgumentException("User or product not found") ;
             }
 
-            _context.SaveChanges();
-
-            return cart;
         }
         public Cart RemoveFromCart(int UserID, int ProductID)
         {
@@ -98,8 +107,32 @@ namespace EcommerceAPI.Services
             var product = _context.Products.Find(ProductID);
             var cart = _context.Carts.Where(x => x.AccountID == UserID && x.ProductID == ProductID).FirstOrDefault();
             _context.Carts.Remove(cart);
+            _context.SaveChanges();
 
             return cart;
+        }
+
+        public Receipt MakeReceipt(int UserID)
+        {
+            var user = _context.Accounts.Find(UserID);
+            var carts = user.Carts;
+            var totalSum = carts.Sum(cart => cart.TotalPrice);
+            var receipt = new Receipt()
+            {
+                AccountID = UserID,
+                Account = user,
+                Date = DateTime.Today,
+                TotalSum = totalSum
+            };
+            _context.Receipts.Add(receipt);
+            _context.SaveChanges();
+
+            foreach (var cart in carts){
+                _context.Carts.Remove(cart);
+                _context.SaveChanges();
+            }
+
+            return receipt;
         }
     }
 }

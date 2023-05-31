@@ -21,45 +21,115 @@ namespace EcommerceAPI.Controllers
         [HttpGet("get")]
         public ActionResult Get(int id)
         {
-            var product = _productServices.Get(id);
-            return Ok(product);
+            try
+            {
+                var product = _productServices.Get(id);
+                return Ok(product);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+
         }
         [HttpPost("create")]
         public ActionResult Create([FromBody] Product product)
         {
-            var new_product = _productServices.Create(product);
-            return Ok(new_product);
+            try
+            {
+                var new_product = _productServices.Create(product);
+                return Ok(new_product);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+
         }
         [HttpDelete("delete")]
         public ActionResult Delete(int id)
         {
-            _productServices.Delete(id);
-            return Ok();
+            try
+            {
+                _productServices.Delete(id);
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest();
+            }
+
         }
         [HttpPut("edit")]
         public ActionResult Edit([FromBody] Product product)
         {
-            var edit_product = _productServices.Edit(product);
-            return Ok(edit_product);
+            try
+            {
+                var edit_product = _productServices.Edit(product);
+                return Ok(edit_product);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+
         }
         [HttpGet("search")]
         public ActionResult Search([FromBody] ProductSearching productSearching)
         {
-            var searchResult = _productServices.Search(productSearching);
-            return Ok(searchResult);
+            try
+            {
+                var searchResult = _productServices.Search(productSearching);
+                return Ok(searchResult);
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
         [HttpPost("addtocart")]
         public ActionResult AddToCart(int UserID, int ProductID, int ProductQuantity)
         {
-            var cartItem = _productServices.AddToCart(UserID, ProductID, ProductQuantity);
-            return Ok(cartItem);
+            try
+            {
+                var cartItem = _productServices.AddToCart(UserID, ProductID, ProductQuantity);
+                return Ok(cartItem);
+            }
+            catch(ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+
         }
         [HttpPost("removefromcart")]
         public ActionResult RemoveFromCart(int UserID, int ProductID)
         {
-            var cartItem = _productServices.RemoveFromCart(UserID, ProductID);
-            return Ok(cartItem);
+            try
+            {
+                var cartItem = _productServices.RemoveFromCart(UserID, ProductID);
+                return Ok(cartItem);
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
-
+        [HttpPost("makereceipt")]
+        public ActionResult MakeReceipt(int UserID)
+        {
+            try
+            {
+                var receipt = _productServices.MakeReceipt(UserID);
+                return Ok(receipt);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
     }
 }

@@ -4,14 +4,16 @@ using EcommerceData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EcommerceData.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230531034952_AddReceiptObject")]
+    partial class AddReceiptObject
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,6 +61,9 @@ namespace EcommerceData.Migrations
                     b.Property<int>("ProductQuantity")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ReceiptID")
+                        .HasColumnType("int");
+
                     b.Property<int>("TotalPrice")
                         .HasColumnType("int");
 
@@ -67,6 +72,8 @@ namespace EcommerceData.Migrations
                     b.HasIndex("AccountID");
 
                     b.HasIndex("ProductID");
+
+                    b.HasIndex("ReceiptID");
 
                     b.ToTable("Carts");
                 });
@@ -128,6 +135,10 @@ namespace EcommerceData.Migrations
                         .HasForeignKey("ProductID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("EcommerceData.Model.Receipt", null)
+                        .WithMany("Carts")
+                        .HasForeignKey("ReceiptID");
                 });
 
             modelBuilder.Entity("EcommerceData.Model.Receipt", b =>

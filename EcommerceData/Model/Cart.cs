@@ -11,6 +11,7 @@ namespace EcommerceData.Model
         public int AccountID { get; set; }
         public int ProductID { get; set; }
         public int ProductQuantity { get; set; }
+        public int TotalPrice { get; set; }
         public Account Account { get; set; }
         public Product Product { get; set; }
     }

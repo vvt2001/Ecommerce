@@ -16,6 +16,7 @@ namespace EcommerceData
             // quan he 1 nhieu
             builder.Entity<Cart>().HasOne(cart => cart.Account).WithMany(account => account.Carts).HasForeignKey(cart => cart.AccountID);
             builder.Entity<Cart>().HasOne(cart => cart.Product).WithMany(product => product.Carts).HasForeignKey(cart => cart.ProductID);
+            builder.Entity<Receipt>().HasOne(receipt => receipt.Account).WithMany(account => account.Receipts).HasForeignKey(receipt => receipt.AccountID);
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -25,6 +26,7 @@ namespace EcommerceData
         public DbSet<Product> Products { get; set; }
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Cart> Carts { get; set; }
+        public DbSet<Receipt> Receipts { get; set; }
 
     }
 }

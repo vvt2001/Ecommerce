@@ -20,26 +20,54 @@ namespace EcommerceAPI.Controllers
         [HttpGet("get")]
         public ActionResult Get(int id)
         {
-            var account = _accountServices.Get(id);
-            return Ok(account);
+            try
+            {
+                var account = _accountServices.Get(id);
+                return Ok(account);
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
         [HttpPost("create")]
         public ActionResult Create([FromBody] Account account)
         {
-            var new_account = _accountServices.Create(account);
-            return Ok(new_account);
+            try
+            {
+                var new_account = _accountServices.Create(account);
+                return Ok(new_account);
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
         [HttpDelete("delete")]
         public ActionResult Delete(int id)
         {
-            _accountServices.Delete(id);
-            return Ok();
+            try
+            {
+                _accountServices.Delete(id);
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
         [HttpPut("edit")]
         public ActionResult Edit(int id, string password)
         {
-            var edit_account = _accountServices.Edit(id, password);
-            return Ok(edit_account);
+            try
+            {
+                var edit_account = _accountServices.Edit(id, password);
+                return Ok(edit_account);
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
     }
 }
