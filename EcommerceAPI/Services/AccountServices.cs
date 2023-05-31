@@ -13,7 +13,7 @@ namespace EcommerceAPI.Services
         Account Create(Account Account);
         void Delete(int id);
         Account Get(int id);
-        Account Edit(int id, string password);
+        Account Edit(int id, string password, string phonenumber, string address);
     }
     public class AccountServices : IAccountServices
     {
@@ -36,10 +36,12 @@ namespace EcommerceAPI.Services
             _context.SaveChanges();
         }
 
-        public Account Edit(int id, string password)
+        public Account Edit(int id, string password, string phonenumber, string address)
         {
             var account = _context.Accounts.Find(id);
             account.Password = password;
+            account.Phonenumber = phonenumber;
+            account.Address = address;
             _context.Entry(account).State = EntityState.Modified;
             _context.SaveChanges();
             return account;

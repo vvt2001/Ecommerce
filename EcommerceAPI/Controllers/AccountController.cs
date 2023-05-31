@@ -57,11 +57,11 @@ namespace EcommerceAPI.Controllers
             }
         }
         [HttpPut("edit")]
-        public ActionResult Edit(int id, string password)
+        public ActionResult Edit(int id, string password, string phonenumber, string address)
         {
             try
             {
-                var edit_account = _accountServices.Edit(id, password);
+                var edit_account = _accountServices.Edit(id, password, phonenumber, address);
                 return Ok(edit_account);
             }
             catch
