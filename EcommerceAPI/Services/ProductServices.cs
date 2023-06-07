@@ -105,11 +105,24 @@ namespace EcommerceAPI.Services
         {
             var user = _context.Accounts.Find(UserID);
             var product = _context.Products.Find(ProductID);
-            var cart = _context.Carts.Where(x => x.AccountID == UserID && x.ProductID == ProductID).FirstOrDefault();
-            _context.Carts.Remove(cart);
-            _context.SaveChanges();
-
-            return cart;
+            if (user != null && product != null)
+            {
+                try
+                {
+                    var cart = _context.Carts.Where(x => x.AccountID == UserID && x.ProductID == ProductID).FirstOrDefault();
+                    _context.Carts.Remove(cart);
+                    _context.SaveChanges();
+                    return cart;
+                }
+                catch
+                {
+                    throw new ArgumentException("Cart error");
+                }
+            }
+            else
+            {
+                throw new ArgumentException("User or product not found");
+            }
         }
 
         public Receipt MakeReceipt(int UserID)

@@ -113,6 +113,10 @@ namespace EcommerceAPI.Controllers
                 var cartItem = _productServices.RemoveFromCart(UserID, ProductID);
                 return Ok(cartItem);
             }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
             catch
             {
                 return BadRequest();
